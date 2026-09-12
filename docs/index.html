@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QSR Voice Channel — Agentforce Contact Center Estimate</title>
+  <style>
+    :root {
+      --sf-blue: #0176d3;
+      --sf-dark: #032d60;
+      --sf-light: #f3f8ff;
+      --border: #d8dde6;
+      --text: #181818;
+      --muted: #6c737a;
+      --warn: #fe9339;
+      --warn-bg: #fff8ee;
+      --good: #2e844a;
+      --good-bg: #effaf0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Salesforce Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: #f5f6f7;
+      line-height: 1.6;
+    }
+    header {
+      background: var(--sf-dark);
+      color: #fff;
+      padding: 28px 40px;
+    }
+    header .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a8c7f0;
+      margin-bottom: 6px;
+    }
+    header h1 { font-size: 24px; font-weight: 700; }
+    header .sub { font-size: 14px; color: #cdd9e8; margin-top: 6px; }
+    header .meta { font-size: 12px; color: #8aaac8; margin-top: 10px; display: flex; gap: 24px; flex-wrap: wrap; }
+    .container { max-width: 1020px; margin: 0 auto; padding: 36px 24px 64px; }
+    .callout {
+      background: var(--warn-bg);
+      border-left: 4px solid var(--warn);
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+      font-size: 13.5px;
+      color: #7a4500;
+    }
+    .callout.info {
+      background: var(--sf-light);
+      border-left-color: var(--sf-blue);
+      color: #032d60;
+    }
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--sf-dark);
+      margin: 36px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+    h3 { font-size: 15px; font-weight: 700; color: var(--sf-dark); margin: 24px 0 10px; }
+    p { margin-bottom: 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin-bottom: 20px;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    th {
+      background: var(--sf-dark);
+      color: #fff;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #fafbfc; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-l { background: #fde68a; color: #78350f; }
+    .badge-m { background: #dbeafe; color: #1e40af; }
+    .badge-s { background: #d1fae5; color: #065f46; }
+    .badge-unknown { background: #fee2e2; color: #991b1b; }
+    .badge-assumed { background: #e0e7ff; color: #3730a3; }
+    .badge-confirmed { background: #d1fae5; color: #065f46; }
+    .badge-p0 { background: #fca5a5; color: #7f1d1d; }
+    .badge-p1 { background: #fed7aa; color: #7c2d12; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .summary-card .lane {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .summary-card .duration {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--sf-dark);
+      line-height: 1.1;
+    }
+    .summary-card .duration span { font-size: 14px; font-weight: 400; color: var(--muted); }
+    .summary-card .detail { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+    .summary-card.anchor { border-top: 4px solid var(--sf-blue); }
+    .summary-card.conditional { border-top: 4px solid var(--warn); }
+    .phase-list { list-style: none; }
+    .phase-list li {
+      display: flex;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .phase-list li:last-child { border-bottom: none; }
+    .phase-num {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      background: var(--sf-blue);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .phase-body .phase-title { font-weight: 700; font-size: 14px; }
+    .phase-body .phase-dur { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .phase-body .phase-desc { font-size: 13px; }
+    .risk-high { color: #b91c1c; font-weight: 600; }
+    .risk-closed { color: var(--good); text-decoration: line-through; }
+    .disclaimer {
+      margin-top: 40px;
+      padding: 16px 20px;
+      background: #f8f9fb;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media (max-width: 700px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      header { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="label">Scoping Estimate &middot; Confidential</div>
+  <h1>QSR Voice Channel &mdash; Agentforce Contact Center</h1>
+  <div class="sub">Walmart QSR Program &middot; Subway Pilot (2 CT stores) &rarr; Domino&rsquo;s / Taco Bell / Dunkin / McDonald&rsquo;s</div>
+  <div class="meta">
+    <span>PRD v0.3 &middot; Sept 8, 2026</span>
+    <span>Estimate Date: Sept 11, 2026</span>
+    <span>Target: FY27 Q1&ndash;Q2</span>
+    <span>Telephony: Salesforce AFCC Native</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="callout info">
+    <strong>Pricing deferred.</strong> Timeline, effort, and resourcing are complete below. Add indicative pricing by supplying bill rates via <code>/commercials</code>.
+  </div>
+
+  <!-- DURATION SUMMARY -->
+  <h2>Duration Comparison</h2>
+
+  <div class="summary-grid">
+    <div class="summary-card anchor">
+      <div class="lane">Traditional <span style="color:#0176d3">&larr; anchor</span></div>
+      <div class="duration">14&ndash;23 <span>weeks</span></div>
+      <div class="detail">~3.0 FTE program-avg &middot; peaks 4.0 FTE mid-build<br>Benchmark-derived, top-down shape</div>
+    </div>
+    <div class="summary-card">
+      <div class="lane">Augmented (AI tooling, same model)</div>
+      <div class="duration">11&ndash;20 <span>weeks</span></div>
+      <div class="detail">~3.0 FTE program-avg<br>Traditional &times; Mid realized band (~15&ndash;20%)</div>
+    </div>
+    <div class="summary-card conditional">
+      <div class="lane">AI-Native &mdash; <strong>conditional</strong></div>
+      <div class="duration">9&ndash;15 <span>weeks</span></div>
+      <div class="detail">~2.2 FTE program-avg<br>Requires daily PO + AI-first mandate</div>
+    </div>
+  </div>
+
+  <!-- SCOPE: 12 EPICS -->
+  <h2>Scope &mdash; 12 Epics</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Epic</th><th>Title</th><th>Size</th><th>Confidence</th><th>Priority</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>E01</td><td>Service Cloud Voice &ndash; Channel Setup &amp; IVR Flow</td><td><span class="badge badge-m">M</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E02</td><td>Omni-Channel QSR Skill &amp; Routing Config</td><td><span class="badge badge-m">M</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E03</td><td>Voice Call &rarr; Case Linkage &amp; Service Console Layout</td><td><span class="badge badge-l">L</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E04</td><td>Order Lookup Lightning Component + OMS Integration</td><td><span class="badge badge-l">L</span></td><td><span class="badge badge-unknown">Unknown ⚠</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E05</td><td>Driver Lightning Component + LMD Un-batch API</td><td><span class="badge badge-l">L</span></td><td><span class="badge badge-unknown">Unknown ⚠</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E06</td><td>Complaint Intake Lightning Form + Allergen P0 Fast-Track</td><td><span class="badge badge-l">L</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E07</td><td>Item Signal Lightning Form + Catalog/Adapter Routing</td><td><span class="badge badge-m">M</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p1">P1</span></td></tr>
+      <tr><td>E08</td><td>Call Recording, Shield Event Monitoring &amp; Compliance</td><td><span class="badge badge-s">S</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+      <tr><td>E09</td><td>Callback / Voicemail Fallback + 4-hr SLA Flow</td><td><span class="badge badge-s">S</span></td><td><span class="badge badge-confirmed">Confirmed</span></td><td><span class="badge badge-p1">P1</span></td></tr>
+      <tr><td>E10</td><td>Einstein Conversation Insights + Post-Call Auto-Summary</td><td><span class="badge badge-m">M</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p1">P1 optional</span></td></tr>
+      <tr><td>E11</td><td>Reporting: Voice + Case Metrics + LMD Dashboard Data Pipe</td><td><span class="badge badge-m">M</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p1">P1</span></td></tr>
+      <tr><td>E12</td><td>UAT, Agent Training &amp; Go-Live Readiness</td><td><span class="badge badge-m">M</span></td><td><span class="badge badge-assumed">Assumed</span></td><td><span class="badge badge-p0">P0</span></td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px;color:#6c737a;margin-top:-10px;">4 &times; L &middot; 5 &times; M &middot; 2 &times; S &nbsp;&mdash;&nbsp; <strong>E04 and E05 are Unknown confidence</strong> (API contracts unresolved) and are the primary range-wideners.</p>
+
+  <!-- PHASING -->
+  <h2>Phasing Plan (Traditional Lane)</h2>
+  <ul class="phase-list">
+    <li>
+      <div class="phase-num">1</div>
+      <div class="phase-body">
+        <div class="phase-title">Discovery &amp; Architecture</div>
+        <div class="phase-dur">2&ndash;3 weeks</div>
+        <div class="phase-desc">Finalize all API contracts (OMS, Subway, LMD, Spark). Resolve open questions (coverage hours, queue owners, dedup key, complaint policy). AFCC toll-free number provisioning. Solution Architecture doc. IVR wireframe. Dev environment.</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">2</div>
+      <div class="phase-body">
+        <div class="phase-title">Build &mdash; P0 Core</div>
+        <div class="phase-dur">6&ndash;10 weeks</div>
+        <div class="phase-desc">E01 IVR Flow &middot; E02 Omni-Channel skill + queues &middot; E03 Voice Call&rarr;Case + Console layout &middot; E04 Order Lookup LWC + OMS integration &middot; E05 Driver LWC + LMD un-batch &middot; E06 Complaint form + Allergen Flow &middot; E08 recording + Shield</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">3</div>
+      <div class="phase-body">
+        <div class="phase-title">Build &mdash; P1 + UAT</div>
+        <div class="phase-dur">4&ndash;7 weeks</div>
+        <div class="phase-desc">E07 Item Signal &middot; E09 Callback &middot; E10 Einstein (optional) &middot; E11 Reporting + data pipe &middot; Warm transfers. End-to-end UAT across all 4 inquiry categories + IVR paths. Defect fix.</div>
+      </div>
+    </li>
+    <li>
+      <div class="phase-num">4</div>
+      <div class="phase-body">
+        <div class="phase-title">Hardening, Training &amp; Go-Live</div>
+        <div class="phase-dur">2&ndash;4 weeks</div>
+        <div class="phase-desc">Agent training (LMD codes, all 4 inquiry flows) &middot; Pilot store testing (2 CT Subway stores) &middot; Phone number publishing &middot; Go/no-go gate &middot; Production cutover &middot; Hypercare</div>
+      </div>
+    </li>
+  </ul>
+
+  <!-- RESOURCE MIX -->
+  <h2>Resource Mix</h2>
+
+  <h3>Salesforce PS Team (Traditional) &mdash; ~3.0 FTE program-avg</h3>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Seniority</th><th>Location</th><th>Phases</th><th>Allocation</th><th>Justification</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Solution Architect</td><td>Senior</td><td>Onshore</td><td>1&ndash;4</td><td>Full</td><td>Design authority: SCV architecture, Console layout, compliance overlay.</td></tr>
+      <tr><td>Developer</td><td>Senior</td><td>Onshore</td><td>2&ndash;3</td><td>Full</td><td>Critical-path integrations E04 (OMS + Subway) and E05 (LMD un-batch + Spark). Unknown-confidence L epics require senior onshore.</td></tr>
+      <tr><td>Developer</td><td>Regular</td><td>Offshore</td><td>2&ndash;3</td><td>Full</td><td>Volume build: Complaint LWC, Item Signal, allergen/callback Flows, Console config.</td></tr>
+      <tr><td>Quality Assurance</td><td>Regular</td><td>Offshore</td><td>2&ndash;4</td><td>Full</td><td>4 IVR paths &times; 4 inquiry categories &times; all LWC components. Allergen P0 path requires independent QA.</td></tr>
+      <tr><td>Project / Program Manager</td><td>Regular</td><td>Onshore</td><td>1&ndash;4</td><td>Half</td><td>Coordination across 9+ Walmart touchpoints.</td></tr>
+      <tr><td>Solution Architect (Voice)</td><td>Regular</td><td>Onshore</td><td>1&ndash;2</td><td>Quarter</td><td>AFCC native telephony: IVR Flow build, toll-free provisioning, Omni-Channel routing config. Phases 1&ndash;2 only.</td></tr>
+      <tr><td>Change &amp; Adoption</td><td>Regular</td><td>Onshore</td><td>3&ndash;4</td><td>Quarter</td><td>Agent training support, go-live readiness. Phases 3&ndash;4 only.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Client-Side Requirements (Walmart must staff)</h3>
+  <table>
+    <thead>
+      <tr><th>Role</th><th>Count</th><th>Phases</th><th>Allocation</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Product Owner / Decision Maker (Surojit)</td><td>1</td><td>1&ndash;4</td><td>Half</td><td class="risk-high">Must unblock 12 open questions. Unstaffed = delivery risk.</td></tr>
+      <tr><td>Integration SMEs (Michelle Fultz + Edwin Ortiz)</td><td>2</td><td>2&ndash;3</td><td>Quarter</td><td class="risk-high">API contracts for E04/E05. Their responsiveness IS the critical path.</td></tr>
+      <tr><td>UAT / QA + pilot store associates</td><td>2</td><td>3&ndash;4</td><td>Half</td><td>In-store voice testing &mdash; PS cannot substitute.</td></tr>
+      <tr><td>Compliance / Legal (TBD)</td><td>1</td><td>1&ndash;4</td><td>Quarter</td><td class="risk-high">Disclosure script, retention period, allergen queue owner. Unstaffed = go-live blocker.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>AI-Native PS Team &mdash; ~2.2 FTE program-avg <em>(Conditional)</em></h3>
+  <div class="callout" style="margin-bottom:16px;">
+    Qualification gate: (1) Surojit available daily (full-time), (2) Michelle Fultz + Edwin Ortiz at half-time with &lt;48hr API contract turnaround, (3) AI-first mandate from Troy Avidano / Jeff Stanley.
+  </div>
+  <table>
+    <thead>
+      <tr><th>Role (QL Accountability)</th><th>Seniority</th><th>Phases</th><th>Allocation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Program Lead (PM)</td><td>Senior</td><td>1&ndash;4</td><td>Half</td></tr>
+      <tr><td>Intent Architect (SA)</td><td>Senior</td><td>1&ndash;4</td><td>Full</td></tr>
+      <tr><td>Agent Orchestrator (TA)</td><td>Senior</td><td>1&ndash;4</td><td>Full</td></tr>
+      <tr><td>Quality Assurance</td><td>Senior</td><td>2&ndash;4</td><td>Half &rarr; Full surge</td></tr>
+      <tr><td>Voice SA (AFCC fractional)</td><td>Regular</td><td>1&ndash;2</td><td>Quarter</td></tr>
+    </tbody>
+  </table>
+
+  <!-- INTEGRATIONS -->
+  <h2>Integrations Called Out</h2>
+  <table>
+    <thead>
+      <tr><th>Integration</th><th>Direction</th><th>Type</th><th>Epic</th><th>API Owner</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>OMS (Order Management System)</td><td>OMS &rarr; Salesforce</td><td>Read REST — order lookup by order ID / customer / FID</td><td>E04</td><td>Michelle Fultz</td></tr>
+      <tr><td>Subway API adapter</td><td>Subway &rarr; Salesforce</td><td>Read REST — POS-received status, order-ready ts, driver-assigned</td><td>E04</td><td>Michelle Fultz</td></tr>
+      <tr><td>LMD un-batch API</td><td>Salesforce &rarr; LMD</td><td>Write/action callout — un-batch driver from active delivery</td><td>E05</td><td>Edwin Ortiz</td></tr>
+      <tr><td>Spark driver systems</td><td>Spark &rarr; Salesforce</td><td>Read REST — current driver ETA, assignment status</td><td>E05</td><td>Edwin Ortiz</td></tr>
+      <tr><td>Power BI LMD Dashboard</td><td>Salesforce &rarr; Power BI</td><td>Outbound data pipe / CRM Analytics connector</td><td>E11</td><td>Platform team</td></tr>
+    </tbody>
+  </table>
+
+  <!-- RISKS -->
+  <h2>Key Risks &amp; Open Items</h2>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Risk / Gap</th><th>Impact</th><th>Owner</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>R1</td><td class="risk-high">OMS + Subway API adapter contracts unresolved</td><td>E04 could escalate to XL; +2&ndash;4 weeks</td><td>Michelle Fultz</td><td>Open &mdash; resolve Phase 1</td></tr>
+      <tr><td>R2</td><td class="risk-high">LMD un-batch + Spark driver API contracts unresolved</td><td>E05 could escalate to XL; +2&ndash;3 weeks</td><td>Edwin Ortiz</td><td>Open &mdash; resolve Phase 1</td></tr>
+      <tr><td>R3</td><td class="risk-high">SCV + Omni-Channel + Einstein licensing not procured</td><td>Blocks everything</td><td>Troy / Jeff + SF commercial</td><td>Phase 0 blocker</td></tr>
+      <tr><td>R4</td><td class="risk-high">Compliance/Legal TBD &mdash; no queue owner, no disclosure script</td><td>Allergen P0 path is go-live blocker</td><td>Compliance/Legal</td><td>Open &mdash; identify Phase 1</td></tr>
+      <tr><td>R5</td><td class="risk-closed">Amazon Connect OEM vs BYOT &mdash; RESOLVED: AFCC native telephony</td><td>Not a risk.</td><td>&mdash;</td><td>Closed</td></tr>
+      <tr><td>R6</td><td>Coverage hours not decided (24/7 vs 5am&ndash;11pm CT)</td><td>Queue hours config + callback SLA clock</td><td>Troy / Jeff</td><td>Open Q1 &mdash; Phase 1</td></tr>
+      <tr><td>R7</td><td>Item Signal triage owner not decided</td><td>E07 queue config blocked; can defer to Phase 2</td><td>AJ Claessens + Catalog</td><td>Open Q8</td></tr>
+      <tr><td>R8</td><td>Complaint hand-back policy not written</td><td>E06 routing logic incomplete</td><td>Care Ops + CES</td><td>Open Q9</td></tr>
+    </tbody>
+  </table>
+
+  <!-- SUMMARY -->
+  <h2>Summary</h2>
+  <table>
+    <thead>
+      <tr><th></th><th>Traditional</th><th>Augmented</th><th>AI-Native (conditional)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Timeline</strong></td><td><strong>14&ndash;23 weeks</strong></td><td>11&ndash;20 weeks</td><td>9&ndash;15 weeks</td></tr>
+      <tr><td><strong>PS FTE avg</strong></td><td>~3.0</td><td>~3.0</td><td>~2.2</td></tr>
+      <tr><td><strong>PS FTE peak</strong></td><td>~4.0</td><td>~4.0</td><td>~3.0</td></tr>
+      <tr><td><strong>Pilot go-live</strong></td><td>FY27 Q1 (Jan 2027 if Phase 1 starts Oct 2026)</td><td>FY27 Q1 (Dec 2026&ndash;Jan 2027)</td><td>FY27 Q1 (Nov&ndash;Dec 2026, conditional)</td></tr>
+      <tr><td><strong>Gate</strong></td><td>None</td><td>None</td><td>Daily PO + AI mandate required</td></tr>
+      <tr><td><strong>Indicative price</strong></td><td colspan="3" style="text-align:center;color:#6c737a;font-style:italic;">Pricing deferred &mdash; supply bill rates via /commercials</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout info" style="margin-top:24px;">
+    <strong>Recommended starting point:</strong> Traditional lane (14&ndash;23 weeks) as the defensible benchmark. Present Augmented (11&ndash;20 weeks) as the AI-tooling uplift with no operating model change. AI-native (9&ndash;15 weeks) as the conditional ceiling if Walmart commits to the operating model.<br><br>
+    <strong>Narrow the range fast by:</strong> Resolving E04/E05 API contracts (biggest band-wideners) and confirming Compliance/Legal owner in Phase 1.
+  </div>
+
+  <div class="disclaimer">
+    <strong>Benchmark Disclaimer:</strong> Duration ranges are derived from a top-down shape classification benchmarked against model training data (Salesforce implementation actuals). These are decision-support ranges, not commitments. The Solution Lead owns the final number and signs off before presenting to the customer. All figures are wall-clock elapsed (inclusive of client-side review, UAT, and compliance sign-offs) unless labeled as PS delivery envelope.<br><br>
+    Estimate authored Sept 11, 2026 &middot; PRD v0.3 &middot; Scopezilla KB: 20,022 atoms (commit 85c7bc71)
+  </div>
+
+</div>
+</body>
+</html>

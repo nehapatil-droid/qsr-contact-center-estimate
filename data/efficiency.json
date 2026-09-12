@@ -1,0 +1,18 @@
+{
+  "project_level": {
+    "native_band": "~35-40%",
+    "native_band_low": 0.35,
+    "native_band_high": 0.40,
+    "provisional": true,
+    "qualification_note": "AI-native band provisional until actuals accumulate. Requires committed operating model: daily decision-maker availability, empowered business owners, AI-first mandate."
+  },
+  "readiness": {
+    "current_scenario": "Mid",
+    "scenarios": {
+      "Low":  {"realized_band": "~10-15%", "band_low": 0.10, "band_high": 0.15},
+      "Mid":  {"realized_band": "~15-20%", "band_low": 0.15, "band_high": 0.20},
+      "High": {"realized_band": "~25-35%", "band_low": 0.25, "band_high": 0.35}
+    }
+  },
+  "notes": "Augmented lane uses realized_band (Mid scenario: ~15-20%). AI-native lane uses native_band (~35-40%, gated + provisional). Bands per decisions/0033."
+}

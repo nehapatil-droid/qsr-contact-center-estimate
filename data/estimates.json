@@ -1,0 +1,302 @@
+[
+  {
+    "epic_id": "E01",
+    "title": "Service Cloud Voice \u2013 Channel Setup & IVR Flow",
+    "t_shirt_size": "M",
+    "confidence": "Assumed",
+    "dimensions": {
+      "data_model": {
+        "size": "XS",
+        "signal": "No new objects; writes to native Voice Call record fields only."
+      },
+      "automation": {
+        "size": "M",
+        "signal": "Service Cloud Voice Flow: greeting \u2192 role capture \u2192 category capture \u2192 FID lookup \u2192 Omni-Channel route \u2192 after-hours branch. ~15\u201320 nodes, conditional logic, 2 DML paths. Declarative/Flow-only."
+      },
+      "integration": {
+        "size": "S",
+        "signal": "Toll-free number provisioning on Amazon Connect OEM or BYOT \u2014 Salesforce-managed telephony bridge. No custom API callout needed."
+      },
+      "ui": {
+        "size": "XS",
+        "signal": "IVR is a Voice Flow \u2014 no LWC build."
+      },
+      "sharing_security": {
+        "size": "S",
+        "signal": "IVR disclosure script in greeting. Recording retention config. Standard profile/permission access."
+      }
+    },
+    "size_rationale": "M \u2014 driven by IVR Flow branching complexity (5+ paths, role+category+FID capture, after-hours branch). All other dimensions XS\u2013S. Assumes toll-free provisioning is Salesforce-native (no bespoke telephony work).",
+    "risks": "Number provisioning lead time unknown (Open Q4: Amazon Connect OEM vs BYOT). Delay here gates the entire voice channel. BYOT adds ~S of additional integration config.",
+    "item_id": "E01",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E02",
+    "title": "Omni-Channel QSR Skill & Routing Config",
+    "t_shirt_size": "M",
+    "confidence": "Assumed",
+    "dimensions": {
+      "data_model": {
+        "size": "XS",
+        "signal": "No new objects. Omni-Channel skill, queue, presence are native config."
+      },
+      "automation": {
+        "size": "S",
+        "signal": "Queue operating hours rules + after-hours routing branch. Minimal Flow automation."
+      },
+      "sharing_security": {
+        "size": "S",
+        "signal": "Omni-Channel presence config, capacity settings, agent assignment to QSR skill. Standard profile-level."
+      },
+      "ui": {
+        "size": "XS",
+        "signal": "Omni-Channel widget is native Service Console component \u2014 no custom LWC."
+      }
+    },
+    "size_rationale": "M \u2014 breadth: QSR skill + 3 warm-transfer queues (AJ Claessens, Spark driver, Compliance on-call) + presence/capacity + operating hours config + callback queue. Each piece is S but the set of 5\u20136 distinct configuration objects compounds to M.",
+    "risks": "Coverage hours decision open (Open Q1). Spanish bilingual coverage TBD \u2014 could add +S if a separate skill/overflow queue is needed. Compliance on-call queue does not exist today: ownership + staffing needed before config can complete.",
+    "item_id": "E02",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E03",
+    "title": "Voice Call \u2192 Case Linkage & Service Console Layout",
+    "t_shirt_size": "L",
+    "confidence": "Assumed",
+    "dimensions": {
+      "data_model": {
+        "size": "S",
+        "signal": "LMD disposition picklist + custom fields on Case. RecordType=Complaint. Voice Call object linked to Case (native pinning)."
+      },
+      "automation": {
+        "size": "L",
+        "signal": "Flow on Voice Call Accepted: SOQL match by phone/FID/30-day window, conditional link vs. auto-create, write role+category to Voice Call record, set Case fields, trigger sub-tab. ~25\u201330 nodes, 3+ DML paths, recursion considerations. Validation rule blocks Case-close."
+      },
+      "ui": {
+        "size": "L",
+        "signal": "Service Console layout: header highlights panel (role, category, FID, Case timeline), category-driven sub-tab switching (4 tabs). Cross-channel 30-day Case timeline filter. Omni-Channel widget + LMD disposition picklist. Requires Lightning App Builder + custom tab components."
+      },
+      "sharing_security": {
+        "size": "S",
+        "signal": "Case RecordType=Complaint layout. Permission set for QSR agents. Standard."
+      }
+    },
+    "size_rationale": "L \u2014 dual L drivers: (1) the Voice Call\u2192Case Flow with branching match logic and 3+ DML paths, (2) the Service Console layout with category-driven sub-tab switching across 4 categories. Together these are the structural backbone of the agent workspace.",
+    "risks": "Case dedup match key (FID + phone + 30-day window) needs validation (Open Q6) \u2014 a bad key inflates duplicate Cases. Sub-tab switching requires all 4 Lightning components (E04\u2013E07) to be built before full Console layout can be tested end-to-end.",
+    "item_id": "E03",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E04",
+    "title": "Order Lookup Lightning Component + OMS Integration",
+    "t_shirt_size": "L",
+    "confidence": "Unknown",
+    "dimensions": {
+      "data_model": {
+        "size": "XS",
+        "signal": "Read-only display \u2014 no new Salesforce objects persisted."
+      },
+      "automation": {
+        "size": "S",
+        "signal": "Apex controller for callout + response parsing. No complex DML."
+      },
+      "integration": {
+        "size": "L",
+        "signal": "Two external API callouts: (1) OMS order lookup by order ID/customer name/FID+time-window, (2) Subway API adapter for POS-received status + adapter timestamp + driver-assigned status. Named Credentials, OAuth, error handling, timeout/retry, field mapping. API contracts not finalized \u2014 Unknown confidence. ASSUMED: REST/JSON, reasonable latency."
+      },
+      "ui": {
+        "size": "L",
+        "signal": "Custom LWC with Apex controller: order ID/customer name/FID+time-window query inputs, results table (POS status, Subway API timestamp, driver status), LMD652 disposition shortcut. Embedded in Service Console sub-tab."
+      }
+    },
+    "size_rationale": "L \u2014 dual L drivers: custom LWC + Apex (UI), and a dual-system integration (OMS + Subway API adapter) with unresolved API contracts. Confidence Unknown because both API contracts are open \u2014 this is the highest-risk build item and the band could widen to XL if APIs are complex or latency/auth patterns are non-standard.",
+    "risks": "CRITICAL: OMS API contract (Michelle Fultz) and Subway API adapter contract not finalized. Auth, data model, error handling all TBD. If APIs require complex transform or are non-REST, size escalates to XL. Dependency on Michelle Fultz team responsiveness is the critical path.",
+    "item_id": "E04",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E05",
+    "title": "Driver Lightning Component + LMD Un-batch API Integration",
+    "t_shirt_size": "L",
+    "confidence": "Unknown",
+    "dimensions": {
+      "data_model": {
+        "size": "XS",
+        "signal": "Driver status displayed read-only. Un-batch action outcome written to Case notes. No new persistent objects."
+      },
+      "automation": {
+        "size": "M",
+        "signal": "Salesforce Flow or Apex callout for LMD un-batch API action. Omni-Channel warm-transfer action config."
+      },
+      "integration": {
+        "size": "L",
+        "signal": "Two external systems: (1) Spark driver systems for current driver ETA + assignment status (read), (2) LMD un-batch API (write/action). Un-batch is an action callout \u2014 not just read. API contracts not finalized (Open: Edwin Ortiz). Error handling, idempotency, and rollback on failed un-batch are design decisions."
+      },
+      "ui": {
+        "size": "L",
+        "signal": "Custom LWC: current driver display, ETA, wait-time-so-far counter, one-click Un-batch button (action-in-context), warm-transfer action to Spark queue. Embedded in Driver sub-tab."
+      }
+    },
+    "size_rationale": "L \u2014 custom LWC + action-oriented integration (un-batch is a write/action, not just a lookup). Unknown confidence because LMD un-batch API contract (Edwin Ortiz) is not finalized. The one-click Un-batch action has error/rollback complexity not present in the Order Lookup.",
+    "risks": "LMD un-batch API contract (Edwin Ortiz) critical dependency. Un-batch is an action with side effects \u2014 failure handling and idempotency design needed. Spark driver ETA API: unknown latency/freshness characteristics. Could widen to XL if un-batch has complex orchestration.",
+    "item_id": "E05",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E06",
+    "title": "Complaint Intake Lightning Form + Allergen P0 Fast-Track",
+    "t_shirt_size": "L",
+    "confidence": "Assumed",
+    "dimensions": {
+      "data_model": {
+        "size": "S",
+        "signal": "Complaint RecordType on Case + custom fields (complaint type picklist, severity, customer contact, action taken, allergen flag, Compliance ack field)."
+      },
+      "automation": {
+        "size": "L",
+        "signal": "Allergen checkbox \u2192 Flow: P0 alert to Compliance + Partner Services queue within 15 min (time-based action), notification, Case-close validation rule blocking save until Compliance ack=TRUE. ~20\u201325 Flow nodes, time-based path, cross-object validation. Regulatory requirement."
+      },
+      "ui": {
+        "size": "M",
+        "signal": "Custom LWC complaint intake form: 7 fields + allergen checkbox + action taken. Auto-populates linked Case. Standard-complexity LWC."
+      },
+      "sharing_security": {
+        "size": "M",
+        "signal": "RecordType=Complaint layout gating. Compliance acknowledgement field: write-restricted to Compliance profile. Regulatory overlay on a P0 path."
+      }
+    },
+    "size_rationale": "L \u2014 driven by the allergen/food-safety P0 Flow (time-based action, 15-min SLA, cross-object validation, compliance ack gating). The form itself is M but the regulatory automation adds L. Compliance on-call queue creation is an operational dependency.",
+    "risks": "Compliance on-call queue does not exist today \u2014 owner + staffing decision (Open Q7) required before Flow can be fully configured and tested. Complaint hand-back policy not written (Open Q9). Allergen path is P0/regulatory \u2014 any gap here is a go-live blocker.",
+    "item_id": "E06",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E07",
+    "title": "Item Signal Lightning Form + Catalog/Adapter Routing",
+    "t_shirt_size": "M",
+    "confidence": "Assumed",
+    "dimensions": {
+      "data_model": {
+        "size": "S",
+        "signal": "Child Case creation (RecordType=Item Signal or similar). Item ID, issue type picklist, duration picklist fields."
+      },
+      "automation": {
+        "size": "M",
+        "signal": "On form save: Flow creates child Case, routes via Omni-Channel or assignment rule to adapter/catalog queue. ~12\u201315 Flow nodes. Straightforward routing."
+      },
+      "ui": {
+        "size": "M",
+        "signal": "Custom LWC: item ID/name input, issue type picklist, duration picklist, save action. Standard-complexity component."
+      }
+    },
+    "size_rationale": "M \u2014 standard-complexity LWC form + Flow child Case creation + queue routing. No external API callout (signal lands on a Salesforce child Case routed to an internal queue). P1 \u2014 could be deferred to Phase 2.",
+    "risks": "Item Signal triage owner not decided (Open Q8). Queue configuration depends on this decision. If routing requires an external Subway API call to signal OOS in real-time (vs. internal Case handoff), size escalates to L.",
+    "item_id": "E07",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E08",
+    "title": "Call Recording, Shield Event Monitoring & Compliance Config",
+    "t_shirt_size": "S",
+    "confidence": "Assumed",
+    "dimensions": {
+      "automation": {
+        "size": "XS",
+        "signal": "IVR disclosure text in Voice Flow greeting (already in E01). Recording retention = config setting."
+      },
+      "sharing_security": {
+        "size": "M",
+        "signal": "Salesforce Shield event monitoring setup on Voice Call + Case objects: field audit trail, event log queries, monitoring rules. Shield is a licensed capability \u2014 requires activation + configuration per Walmart policy."
+      }
+    },
+    "size_rationale": "S \u2014 predominantly Shield event monitoring config + retention settings. No custom development. Dependent on Compliance/Legal supplying retention period and disclosure script.",
+    "risks": "Shield licensing confirmation needed. Disclosure script and retention period must come from Compliance/Legal (TBD). Without these inputs this epic cannot close UAT.",
+    "item_id": "E08",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E09",
+    "title": "Callback / Voicemail Fallback + 4-hr SLA Flow",
+    "t_shirt_size": "S",
+    "confidence": "Confirmed",
+    "dimensions": {
+      "automation": {
+        "size": "S",
+        "signal": "Service Cloud Voice callback config (native IVR option) + Omni-Channel queue callback settings. Flow: voicemail \u2192 Case creation, 4-hr SLA enforced via time-based action, follow-up task creation. ~10\u201312 Flow nodes."
+      },
+      "ui": {
+        "size": "XS",
+        "signal": "No custom UI \u2014 native SCV callback prompt in IVR Flow."
+      }
+    },
+    "size_rationale": "S \u2014 native Service Cloud Voice callback + a single SLA-enforcement Flow. Standard capability, well-documented, no custom code.",
+    "risks": "Coverage hours decision (Open Q1) impacts SLA clock start. Minor.",
+    "item_id": "E09",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E10",
+    "title": "Einstein Conversation Insights + Post-Call Auto-Summary",
+    "t_shirt_size": "M",
+    "confidence": "Assumed",
+    "dimensions": {
+      "automation": {
+        "size": "S",
+        "signal": "Post-call Flow to append Einstein summary to Case.Description. Agent edit-before-save."
+      },
+      "intelligence_ai": {
+        "size": "M",
+        "signal": "Einstein Conversation Insights enablement + real-time transcription via SCV. Post-call auto-summary is a generative Einstein feature (prompt template for QSR domain). Optional auto-tagging of LMD codes/complaint type from transcript \u2014 requires prompt tuning for restaurant vocabulary."
+      },
+      "ui": {
+        "size": "XS",
+        "signal": "Einstein summary displayed natively in Case record \u2014 no custom LWC."
+      }
+    },
+    "size_rationale": "M \u2014 Einstein for Service enablement + domain tuning for QSR restaurant vocabulary. P1/optional. Blocked by Einstein license procurement (Open Q12).",
+    "risks": "Einstein for Service licensing required and not yet procured. QSR/restaurant domain accuracy (LMD code recognition, order/driver terminology) needs prompt tuning \u2014 effort could increase if auto-tagging accuracy is a hard requirement.",
+    "item_id": "E10",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E11",
+    "title": "Reporting: Voice + Case Metrics + LMD Dashboard Data Pipe",
+    "t_shirt_size": "M",
+    "confidence": "Assumed",
+    "dimensions": {
+      "analytics_insights": {
+        "size": "M",
+        "signal": "Native Salesforce reports on Voice Call + Case (call volume by category, AHT, LMD rate, complaint mix, item signal volume by store). Plus data pipe to Power BI LMD Dashboard \u2014 either CRM Analytics connector or a scheduled export/API feed. Data pipe scope TBD."
+      },
+      "automation": {
+        "size": "S",
+        "signal": "Scheduled data export or CRM Analytics recipe if data pipe is the chosen approach."
+      }
+    },
+    "size_rationale": "M \u2014 native Salesforce reporting is S, but the Power BI LMD Dashboard data pipe (CRM Analytics or API export) adds complexity. Exact data pipe mechanism TBD \u2014 could be S (scheduled export) or L (CRM Analytics datasets + recipes).",
+    "risks": "Data pipe mechanism not decided. CRM Analytics path requires additional licensing + recipe build (escalates to L). If Power BI team owns the connector and just needs a Salesforce data export, this stays S\u2013M.",
+    "item_id": "E11",
+    "item_type": "epic"
+  },
+  {
+    "epic_id": "E12",
+    "title": "UAT, Agent Training & Go-Live Readiness",
+    "t_shirt_size": "M",
+    "confidence": "Assumed",
+    "dimensions": {
+      "automation": {
+        "size": "XS",
+        "signal": "Test scripts + defect management only."
+      },
+      "ui": {
+        "size": "XS",
+        "signal": "No build \u2014 testing existing components."
+      }
+    },
+    "size_rationale": "M \u2014 4 inquiry categories \u00d7 IVR paths \u00d7 agent Console flows = substantive test coverage. Agent training curriculum (WFM/CES). Pilot store testing (2 CT Subway stores). Go/no-go gate. Effort is in coordination + execution, not build.",
+    "risks": "UAT requires Walmart QA resources + pilot store availability \u2014 client-side staffing risk. Training curriculum owned by Brayden Wood/WFM \u2014 lead time needed. Volume unknown until pilot.",
+    "item_id": "E12",
+    "item_type": "epic"
+  }
+]

@@ -1,0 +1,178 @@
+[
+  {
+    "epic_id": "E01",
+    "title": "Service Cloud Voice \u2013 Channel Setup & IVR Flow",
+    "description": "Provision QSR toll-free number on Service Cloud Voice (Amazon Connect OEM or BYOT). Build Service Cloud Voice Flow: greeting, role capture (Franchisee/Store Manager/Store Operator), category capture (Order/Driver/Complaint/Item), FID/store-phone lookup, Omni-Channel route. IVR disclosure for call recording. After-hours branch to voicemail.",
+    "category": "Voice / Telephony",
+    "priority": "Must",
+    "requirements": [
+      "BR-1",
+      "BR-3",
+      "BR-9",
+      "PR-1",
+      "PR-15"
+    ],
+    "notes": "Dependent on number provisioning lead time (Amazon Connect OEM vs BYOT decision open). Existing SF org \u2013 no greenfield setup.",
+    "epic_name": "Service Cloud Voice \u2013 Channel Setup & IVR Flow",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E02",
+    "title": "Omni-Channel QSR Skill & Routing Config",
+    "description": "Create QSR skill in Salesforce Omni-Channel. Configure skill-based routing rules, agent presence, capacity config, and queue operating hours. Configure 3 warm-transfer queues: AJ Claessens (backend escalation), Spark driver support, Compliance on-call. Callback queue config.",
+    "category": "Routing & Queuing",
+    "priority": "Must",
+    "requirements": [
+      "BR-2",
+      "BR-5",
+      "BR-10",
+      "PR-2",
+      "PR-14"
+    ],
+    "notes": "Coverage hours decision open (24/7 vs 5am\u201311pm CT). Spanish bilingual coverage TBD \u2013 may require additional skill/overflow config. Compliance on-call queue does not exist today.",
+    "epic_name": "Omni-Channel QSR Skill & Routing Config",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E03",
+    "title": "Voice Call \u2192 Case Linkage & Service Console Layout",
+    "description": "Salesforce Flow on Voice Call Accepted: match open Case by phone/FID/30-day window, link if found, auto-create tagged QSR-Voice + category if not. Service Console layout: header strip (role, category, FID/Store ID, linked Case + 30-day timeline), category-driven sub-tab switching. Omni-Channel widget + LMD disposition picklist in Console. Cross-channel case timeline (email + voice, 30 days).",
+    "category": "Service Console / Case",
+    "priority": "Must",
+    "requirements": [
+      "BR-3",
+      "BR-8",
+      "PR-3",
+      "PR-4",
+      "PR-10",
+      "PR-11"
+    ],
+    "notes": "Builds on existing Service Console. Case dedup match key (FID + phone + 30-day window) needs validation. LMD picklist: LMD650/651/652 + Complaint/Item/Other. Validation rule blocks Case save if disposition empty.",
+    "epic_name": "Voice Call \u2192 Case Linkage & Service Console Layout",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E04",
+    "title": "Order Lookup Lightning Component + OMS Integration",
+    "description": "Custom Lightning component embedded in Service Console for Order category sub-tab. Query OMS by order ID / customer name / FID + time-window. Display POS-received status, Subway API adapter timestamp, driver-assigned status. Enables live LMD652 disposition. Requires Apex callout or External Services to OMS + Subway API adapter.",
+    "category": "Custom Development / Integration",
+    "priority": "Must",
+    "requirements": [
+      "BR-4",
+      "PR-5"
+    ],
+    "notes": "Highest complexity item. Requires API contract from Michelle Fultz (OMS) and Subway API adapter. Two external system integrations. Auth, error handling, field mapping all TBD. ASSUMED: REST/JSON APIs available.",
+    "epic_name": "Order Lookup Lightning Component + OMS Integration",
+    "confidence": "Unknown"
+  },
+  {
+    "epic_id": "E05",
+    "title": "Driver Lightning Component + LMD Un-batch API Integration",
+    "description": "Custom Lightning component for Driver category sub-tab: current assigned driver, ETA, wait-time-so-far. One-click Un-batch request action via Salesforce Flow/Apex \u2192 LMD un-batch API. Warm-transfer action to Spark driver support queue via Omni-Channel. Driver behavior/safety report path.",
+    "category": "Custom Development / Integration",
+    "priority": "Must",
+    "requirements": [
+      "BR-5",
+      "PR-6"
+    ],
+    "notes": "LMD un-batch API contract needed from Edwin Ortiz. Spark driver systems API for ETA/assignment status. Two external APIs. ASSUMED: callout latency acceptable within console UX.",
+    "epic_name": "Driver Lightning Component + LMD Un-batch API Integration",
+    "confidence": "Unknown"
+  },
+  {
+    "epic_id": "E06",
+    "title": "Complaint Intake Lightning Form + Allergen P0 Fast-Track",
+    "description": "Custom Lightning form for Complaint category sub-tab: type (food quality/missing item/cold food/wrong order/driver behavior/allergen), severity, customer contact, action taken. Auto-populates linked Case fields; sets RecordType=Complaint. Allergen/food-safety checkbox triggers Salesforce Flow P0 alert to Compliance + Partner Services on-call queue within 15 min. Validation rule blocks Case-close until Compliance acknowledgement field checked.",
+    "category": "Custom Development / Compliance",
+    "priority": "Must",
+    "requirements": [
+      "BR-6",
+      "PR-7",
+      "PR-9"
+    ],
+    "notes": "Compliance on-call queue does not exist today \u2013 must be created. 15-min SLA Flow build. Complaint hand-back policy to Customer Care not yet written (Open Q9). Allergen path is regulatory (P0).",
+    "epic_name": "Complaint Intake Lightning Form + Allergen P0 Fast-Track",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E07",
+    "title": "Item Signal Lightning Form + Catalog/Adapter Routing",
+    "description": "Custom Lightning form for Item category sub-tab: item ID/name, issue type (OOS/wrong-price/wrong-image/modifier-not-supported/not-carried-here), duration (right-now/today/ongoing). On save: child Case auto-created and routed via Omni-Channel or Salesforce Flow to Subway API adapter team + catalog team queue.",
+    "category": "Custom Development",
+    "priority": "Should",
+    "requirements": [
+      "BR-7",
+      "PR-8"
+    ],
+    "notes": "Item Signal triage owner not yet decided (Open Q8: PS vs catalog vs Subway adapter). Queue config pending owner decision. P1 \u2013 can be deferred to Phase 2 if needed.",
+    "epic_name": "Item Signal Lightning Form + Catalog/Adapter Routing",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E08",
+    "title": "Call Recording, Shield Event Monitoring & Compliance Config",
+    "description": "Configure Service Cloud Voice call recording per Walmart policy. IVR greeting disclosure script. Retention period configuration. Salesforce Shield event monitoring on Voice Call + Case objects for full audit trail. No PCI data in scope.",
+    "category": "Compliance / Security",
+    "priority": "Must",
+    "requirements": [
+      "BR-9",
+      "PR-15"
+    ],
+    "notes": "Compliance/Legal (TBD) to supply disclosure script + retention period. Shield may require separate licensing confirmation.",
+    "epic_name": "Call Recording, Shield Event Monitoring & Compliance Config",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E09",
+    "title": "Callback / Voicemail Fallback + 4-hr SLA Flow",
+    "description": "Configure Native Service Cloud Voice in-queue callback (Press 1 to hold place + get callback). After-hours voicemail transcribed to Case. Salesforce Flow enforces 4-hr callback SLA and creates follow-up tasks for agents.",
+    "category": "Voice / Automation",
+    "priority": "Should",
+    "requirements": [
+      "BR-10",
+      "PR-13"
+    ],
+    "notes": "Coverage hours decision (Open Q1) impacts when SLA clock starts. Native SCV capability \u2013 config + Flow automation.",
+    "epic_name": "Callback / Voicemail Fallback + 4-hr SLA Flow",
+    "confidence": "Confirmed"
+  },
+  {
+    "epic_id": "E10",
+    "title": "Einstein Conversation Insights + Post-Call Auto-Summary",
+    "description": "Enable real-time voice transcription via Service Cloud Voice. Configure Einstein Conversation Insights for post-call auto-summary appended to Case.Description. Agent review + edit before save. Optional: Einstein auto-tags LMD code / complaint type / item ID from transcript.",
+    "category": "AI / Einstein",
+    "priority": "Should",
+    "requirements": [
+      "PR-12"
+    ],
+    "notes": "Einstein for Service licensing required (Open Q12). Optional per PRD. QSR/restaurant domain accuracy may need tuning. Dependent on Einstein license procurement.",
+    "epic_name": "Einstein Conversation Insights + Post-Call Auto-Summary",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E11",
+    "title": "Reporting: Voice + Case Metrics + LMD Dashboard Data Pipe",
+    "description": "Native Salesforce reports on Voice Call + Case objects: call volume by category, disposition-code volume, average AHT by category, LMD650/651/652 rate, complaint-severity mix, item-signal volume by store. Data pipe or CRM Analytics connector to Power BI LMD Dashboard.",
+    "category": "Reporting / Analytics",
+    "priority": "Should",
+    "requirements": [
+      "PR-16"
+    ],
+    "notes": "Power BI data pipe / CRM Analytics connector config needed. Scope with Salesforce platform team. Reporting objects are native \u2013 effort is in report design + data pipe config.",
+    "epic_name": "Reporting: Voice + Case Metrics + LMD Dashboard Data Pipe",
+    "confidence": "Assumed"
+  },
+  {
+    "epic_id": "E12",
+    "title": "UAT, Agent Training & Go-Live Readiness",
+    "description": "End-to-end UAT across all 4 inquiry categories (Order/Driver/Complaint/Item) and IVR paths. Agent training on QSR voice skill: order-flow, 3 LMD codes, driver/un-batch, complaint handling, item signalling. Store-associate pilot testing (2 CT Subway stores). Phone number publishing to Seller Center welcome kit + store signage.",
+    "category": "Testing / Enablement",
+    "priority": "Must",
+    "requirements": [
+      "PR-17"
+    ],
+    "notes": "WFM/CES owns training curriculum. UAT requires Walmart QA resources + pilot store participation. Go/no-go decision gate before live calls.",
+    "epic_name": "UAT, Agent Training & Go-Live Readiness",
+    "confidence": "Assumed"
+  }
+]

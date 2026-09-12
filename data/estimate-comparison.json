@@ -1,0 +1,437 @@
+{
+  "anchor": "traditional",
+  "lanes": {
+    "traditional": {
+      "duration_weeks_range": "14-23",
+      "clock": "wall-clock elapsed",
+      "ps_delivery_envelope": "12-17 weeks",
+      "basis": "derived",
+      "duration_provenance": "KB benchmark anchor: Contact Center Phase 1 (Service Cloud + Agentforce + telephony) ~12-14 weeks. Adjusted up to 14-20 week baseline for: 12 epics (4 L, 5 M), 4 external API integrations, 4 custom LWCs, regulatory/compliance overlay. Risk adders: +15% Unknown API contracts (E04, E05); +10% regulatory compliance overlay (allergen P0, Shield); -5% brownfield offset (existing Service Cloud org). Net +20% high-end adder \u2192 14-23 weeks wall-clock. Native AFCC telephony (Salesforce-owned infrastructure, no BYOT/OEM) removes third-party provisioning risk and lead-time uncertainty. Source: model-training-data (Benchmark Disclaimer applies).",
+      "capacity_summary": "~3.0 FTE program-average (14-24 weeks wall-clock; peaks ~4 FTE during Phase 2 build)",
+      "roster": [
+        {
+          "resource_id": "R01",
+          "role": "Solution Architect",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "full",
+          "justification": "End-to-end design authority: Service Cloud Voice architecture, Omni-Channel config, Console layout, compliance/Shield overlay. Owns all integration design decisions. Cannot offshore \u2014 tight iteration with Walmart platform team (OMS/LMD/Subway API contracts)."
+        },
+        {
+          "resource_id": "R02",
+          "role": "Developer",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-3",
+          "allocation": "full",
+          "justification": "Critical-path integration build: Order Lookup LWC + OMS/Subway API callouts (E04), Driver LWC + LMD un-batch API (E05). Both are Unknown-confidence L epics with unresolved API contracts \u2014 senior required, onshore for close iteration with Walmart API owners (Michelle Fultz, Edwin Ortiz)."
+        },
+        {
+          "resource_id": "R03",
+          "role": "Developer",
+          "seniority": "regular",
+          "location": "offshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-3",
+          "allocation": "full",
+          "justification": "Volume build pod: Complaint intake LWC (E06), Item Signal form (E07), allergen Flow (E06), callback/SLA Flow (E09), Console layout config (E03 sub-tabs). Standard-complexity M items well-suited to offshore delivery. Paired with senior Developer in Phase 2."
+        },
+        {
+          "resource_id": "R04",
+          "role": "Quality Assurance",
+          "seniority": "regular",
+          "location": "offshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-4",
+          "allocation": "full",
+          "justification": "Test coverage: 4 IVR paths \u00d7 4 inquiry categories \u00d7 all LWC components. Allergen P0 path requires independent QA verification (regulatory). UAT coordination with Walmart QA team. Offshore QA is appropriate for this scope \u2014 no regulated data-emit that requires onshore."
+        },
+        {
+          "resource_id": "R05",
+          "role": "Project / Program Manager",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "half",
+          "justification": "Delivery coordination across 9+ team touchpoints (Walmart: Troy/Jeff/Surojit/Michelle/Edwin/Brayden, Salesforce Voice/Platform Eng, Compliance/Legal TBD). Half-time on a single-workstream engagement. Onshore for client relationship management."
+        },
+        {
+          "resource_id": "R06",
+          "role": "Solution Architect",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-2",
+          "allocation": "quarter",
+          "justification": "Salesforce Voice / telephony specialist: toll-free number provisioning, Amazon Connect OEM vs BYOT decision, IVR Flow build (E01), Omni-Channel routing config (E02). Fractional specialist consumed in Phases 1-2 only \u2014 distinct expertise from general SA."
+        },
+        {
+          "resource_id": "R07",
+          "role": "Change & Adoption",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "3-4",
+          "allocation": "quarter",
+          "justification": "Agent training support + go-live readiness (E12). WFM/CES owns the training curriculum, but PS supports the training delivery design. Light fractional engagement in Phases 3-4 only."
+        },
+        {
+          "resource_id": "C01",
+          "role": "Product Owner / Decision Maker",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "client",
+          "phases_active": "1-4",
+          "allocation": "half",
+          "justification": "Surojit Mukhopadhyay (Product). Must be available to unblock 12 open questions (coverage hours, API contracts, queue ownership, etc.). A named, reachable decision-maker is the primary AI-native qualification gate. Half-time cadence minimum."
+        },
+        {
+          "resource_id": "C02",
+          "role": "Integration SMEs",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 2,
+          "side": "client",
+          "phases_active": "2-3",
+          "allocation": "quarter",
+          "justification": "Michelle Fultz (OMS/Subway API adapter) + Edwin Ortiz (LMD un-batch API). Both needed in Phase 2 to finalize API contracts for E04/E05. Quarter-time but their responsiveness is the critical path for the Unknown-confidence L epics."
+        },
+        {
+          "resource_id": "C03",
+          "role": "UAT / QA",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 2,
+          "side": "client",
+          "phases_active": "3-4",
+          "allocation": "half",
+          "justification": "Walmart QA team + pilot store associates (2 CT Subway stores). UAT requires in-store voice testing \u2014 PS cannot substitute. Training delivery also requires Brayden Wood / WFM participation."
+        },
+        {
+          "resource_id": "C04",
+          "role": "Compliance / Legal",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "client",
+          "phases_active": "1-4",
+          "allocation": "quarter",
+          "justification": "Must supply: call recording disclosure script, Shield retention period, allergen on-call queue owner, Compliance acknowledgement field owner. Unstaffed Compliance side is the #1 go-live blocker after API contracts."
+        }
+      ],
+      "indicative_price_range": {
+        "low": 0,
+        "high": 0,
+        "currency": "USD"
+      },
+      "confidence": "Assumed",
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Discovery & Architecture",
+          "weeks": "2-3",
+          "activities": "Finalize API contracts (OMS/Subway/LMD/Spark), confirm open questions (coverage hours, queue owners, dedup key, complaint policy, allergen queue), telephony decision (Amazon Connect OEM vs BYOT), Solution Architecture doc, Omni-Channel + Console design, IVR Flow wireframe, dev environment setup."
+        },
+        {
+          "phase": 2,
+          "name": "Build \u2013 P0 Core",
+          "weeks": "6-10",
+          "activities": "IVR Flow (E01), Omni-Channel QSR skill + queues (E02), Voice Call\u2192Case Flow + Console layout (E03), Order Lookup LWC + OMS integration (E04), Driver LWC + LMD un-batch integration (E05), Complaint intake form + Allergen P0 Flow (E06), Call recording + Shield (E08). All P0 requirements."
+        },
+        {
+          "phase": 3,
+          "name": "Build \u2013 P1 + UAT",
+          "weeks": "4-7",
+          "activities": "Item Signal form (E07), Callback/voicemail Flow (E09), Einstein auto-summary (E10 \u2013 optional), Reporting + data pipe (E11), warm-transfer actions (PR-14). End-to-end UAT with Walmart QA across all 4 inquiry categories + IVR paths. Defect remediation."
+        },
+        {
+          "phase": 4,
+          "name": "Hardening, Training & Go-Live",
+          "weeks": "2-4",
+          "activities": "Agent training (QSR voice skill: LMD codes, order-flow, driver/un-batch, complaint, item signalling). Pilot store testing \u2013 2 CT Subway stores. Phone number publishing (Seller Center, store signage). Go/no-go gate. Production cutover. Hypercare."
+        }
+      ]
+    },
+    "augmented": {
+      "duration_weeks_range": "11-20",
+      "clock": "wall-clock elapsed",
+      "basis": "derived",
+      "duration_provenance": "Traditional baseline 14-24 weeks compressed by efficiency realized_band at Mid readiness (~15-20%, efficiency.json). compressed_low = 14\u00d70.80 = 11.2 \u2192 11 weeks; compressed_high = 24\u00d70.85 = 20.4 \u2192 20 weeks. AI tooling (Agentforce/Claude Code) accelerates config, LWC scaffolding, Flow build, test generation \u2014 same team, same operating model, faster execution. Benchmark-based, not a commitment.",
+      "capacity_summary": "~3.0 FTE program-average (same team shape as traditional, faster execution via AI tooling)",
+      "roster": [
+        {
+          "resource_id": "R01",
+          "role": "Solution Architect",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "full",
+          "justification": "Same as traditional \u2014 SA uses AI tooling (Claude Code, Agentforce builder) for design doc generation + config scaffolding but accountability and design ownership unchanged."
+        },
+        {
+          "resource_id": "R02",
+          "role": "Developer",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-3",
+          "allocation": "full",
+          "justification": "Senior Developer directs AI code generation for LWC + Apex (E04, E05). AI tooling accelerates scaffolding but senior oversight required for Unknown-confidence API integrations \u2014 cannot reduce headcount on critical-path integrations."
+        },
+        {
+          "resource_id": "R03",
+          "role": "Developer",
+          "seniority": "regular",
+          "location": "offshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-3",
+          "allocation": "full",
+          "justification": "AI tooling accelerates M-complexity LWC builds (E06, E07) and Flow builds. Volume build pod unchanged \u2014 AI tooling improves throughput of this role, not headcount."
+        },
+        {
+          "resource_id": "R04",
+          "role": "Quality Assurance",
+          "seniority": "regular",
+          "location": "offshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-4",
+          "allocation": "full",
+          "justification": "AI-generated test cases accelerate coverage (Flows, LWCs, IVR paths). Human QA remains independent check \u2014 not replaced. Allergen P0 path requires human sign-off."
+        },
+        {
+          "resource_id": "R05",
+          "role": "Project / Program Manager",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "half",
+          "justification": "Unchanged from traditional."
+        },
+        {
+          "resource_id": "R06",
+          "role": "Solution Architect",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-2",
+          "allocation": "quarter",
+          "justification": "Voice/telephony specialist unchanged \u2014 AI tooling helps with IVR Flow build but specialist expertise still needed for provisioning decision."
+        },
+        {
+          "resource_id": "R07",
+          "role": "Change & Adoption",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "3-4",
+          "allocation": "quarter",
+          "justification": "Unchanged from traditional."
+        }
+      ],
+      "indicative_price_range": {
+        "low": 0,
+        "high": 0,
+        "currency": "USD"
+      },
+      "confidence": "Assumed",
+      "qualification": "n/a \u2014 augmented lane does not require operating model change"
+    },
+    "quantum-leap": {
+      "duration_weeks_range": "9-15",
+      "clock": "wall-clock elapsed",
+      "basis": "derived",
+      "duration_provenance": "Traditional baseline 14-24 weeks compressed by efficiency native_band (~35-40%, provisional, gated \u2014 efficiency.json). compressed_low = 14\u00d70.60 = 8.4 \u2192 9 weeks; compressed_high = 24\u00d70.65 = 15.6 \u2192 16 weeks. AI-native operating model: Intent Architect directs Agentforce agent fleet + Claude Code for build volume; senior-weighted core; agents absorb config/LWC scaffolding/test generation. Benchmark-based, provisional, not a commitment.",
+      "capacity_summary": "~2.2 FTE program-average (senior-weighted lean core; agents absorb volume below the core)",
+      "roster": [
+        {
+          "resource_id": "R01",
+          "role": "Project / Program Manager (Program Lead)",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "half",
+          "justification": "Program Lead \u2014 customer relationship, gate decisions, the plan. Half-time on a single-workstream engagement. Onshore for Walmart relationship management."
+        },
+        {
+          "resource_id": "R02",
+          "role": "Solution Architect (Intent Architect)",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "full",
+          "justification": "Intent Architect \u2014 owns the what/why, solution intent sign-off, coaches Walmart product owner (Surojit). Directs agent fleet for architecture decisions + integration design. Owns all open-question resolution. Onshore \u2014 tight iteration with Walmart stakeholders."
+        },
+        {
+          "resource_id": "R03",
+          "role": "Technical Architect (Agent Orchestrator)",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-4",
+          "allocation": "full",
+          "justification": "Agent Orchestrator \u2014 directs Claude Code / Agentforce agent fleet for LWC build (E03\u2013E07), Flow automation, Apex callouts. Owns day-to-day build and technical solution. Onshore for close iteration on Unknown-confidence API integrations (E04, E05). Senior required \u2014 the two integration L epics are the critical-path hard problems the human builder owns (adjustment 1)."
+        },
+        {
+          "resource_id": "R04",
+          "role": "Quality Assurance",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "2-4",
+          "allocation": "half",
+          "justification": "QA is agent-amplified (AI generates test cases, test data) but never agent-replaced \u2014 an agent cannot be the independent check on its own output. Senior QA required: allergen P0 path is regulatory, Shield audit trail is compliance-sensitive. Half-time because agents handle test generation volume; human senior handles sign-off and P0 path. Surges to full in Phase 3 hardening."
+        },
+        {
+          "resource_id": "R05",
+          "role": "Solution Architect",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 1,
+          "side": "ps",
+          "phases_active": "1-2",
+          "allocation": "quarter",
+          "justification": "Voice/telephony fractional specialist (IVR Flow, number provisioning, Omni-Channel config). Consumed Phases 1-2 only. Fractional because Agent Orchestrator directs AI for config scaffolding; specialist needed for provisioning decision only."
+        },
+        {
+          "resource_id": "C01",
+          "role": "Product Owner / Decision Maker",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "client",
+          "phases_active": "1-4",
+          "allocation": "full",
+          "justification": "QUALIFICATION GATE: AI-native compression requires a named, empowered Walmart product owner (Surojit) available daily to unblock 12 open questions within 24hrs. If this role is not committed at full availability, the AI-native lane is conditional. This is the single largest qualification risk."
+        },
+        {
+          "resource_id": "C02",
+          "role": "Integration SMEs",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 2,
+          "side": "client",
+          "phases_active": "2-3",
+          "allocation": "half",
+          "justification": "Michelle Fultz + Edwin Ortiz. AI-native requires faster API contract turnaround (days not weeks) \u2014 half-time dedicated engagement from both SMEs in Phase 2. Unstaffed = critical path block regardless of lane."
+        },
+        {
+          "resource_id": "C03",
+          "role": "UAT / QA",
+          "seniority": "regular",
+          "location": "onshore",
+          "count": 2,
+          "side": "client",
+          "phases_active": "3-4",
+          "allocation": "half",
+          "justification": "Pilot store testing unchanged \u2014 AI-native doesn't remove the need for in-store voice testing."
+        },
+        {
+          "resource_id": "C04",
+          "role": "Compliance / Legal",
+          "seniority": "senior",
+          "location": "onshore",
+          "count": 1,
+          "side": "client",
+          "phases_active": "1-4",
+          "allocation": "quarter",
+          "justification": "Same as traditional \u2014 compliance inputs cannot be AI-generated."
+        }
+      ],
+      "indicative_price_range": {
+        "low": 0,
+        "high": 0,
+        "currency": "USD"
+      },
+      "confidence": "Assumed",
+      "qualification": "conditional",
+      "qualification_note": "AI-native lane requires: (1) named empowered Walmart product owner (Surojit) available daily, (2) empowered integration SMEs with <48hr turnaround on API contract decisions, (3) AI-first mandate from Troy/Jeff. Without these commitments, this lane is conditional \u2014 achievable but not deliverable without the operating model.",
+      "provisional_note": "AI-native band (~35-40%) provisional until AI-native actuals accumulate; magnitude uncalibrated, diagnosis grounded (decisions/0011, decisions/0033)."
+    }
+  },
+  "delta": {
+    "summary": "AI-native vs traditional: 9-16 weeks vs 14-24 weeks (35-40% compression, provisional). Team: ~2.2 FTE (senior-weighted core: Intent Architect + Agent Orchestrator + half-time Program Lead + half-time senior QA) vs ~3.0 FTE (SA + 2 Developers + QA + half-PM + fractional specialists). Compression comes from: agent fleet absorbing LWC scaffolding/Flow build/test generation volume under a senior directing core; sequential hard problems taken one-at-a-time by seniors. Delta narrows or disappears if API contracts are slow to resolve \u2014 the two Unknown-confidence L epics (E04, E05) are the critical path in both lanes.",
+    "range_drivers": [
+      {
+        "epic_id": "E04",
+        "driver": "Unknown OMS + Subway API adapter contracts \u2014 auth, data model, error handling all unresolved",
+        "tighten_with": "Finalize API contracts with Michelle Fultz before Phase 2 start. Confirm: REST/JSON? OAuth/Named Credential? Field mapping? Latency SLA?"
+      },
+      {
+        "epic_id": "E05",
+        "driver": "Unknown LMD un-batch API contract + Spark driver systems API \u2014 un-batch action has side effects, error/rollback design open",
+        "tighten_with": "Finalize API contract with Edwin Ortiz. Confirm: idempotency model, rollback on failure, driver ETA freshness/polling interval."
+      },
+      {
+        "epic_id": "E06",
+        "driver": "Allergen P0 Flow + Compliance queue ownership open \u2014 15-min SLA Flow cannot be tested until queue is staffed and Compliance ack field owner is named",
+        "tighten_with": "Assign Compliance queue owner (Open Q7). Get Compliance/Legal TBD identified and available in Phase 1."
+      }
+    ]
+  },
+  "assumptions": [
+    "Existing Salesforce org is on Service Cloud Enterprise or Unlimited \u2014 Service Cloud Voice licensing procurement is in progress (Open Q12).",
+    "Amazon Connect OEM is the telephony approach (not BYOT) \u2014 BYOT adds ~1-2 weeks to E01.",
+    "OMS and Subway API adapter expose REST/JSON endpoints with standard OAuth \u2014 non-REST or SOAP would escalate E04 to XL.",
+    "LMD un-batch API is a synchronous REST callout \u2014 async/event-driven would add Flow orchestration complexity to E05.",
+    "No data migration required \u2014 all existing Case/Contact data remains on the existing org.",
+    "Spanish bilingual coverage is not in scope for Phase 1 \u2014 if required, adds ~S to E02 (separate skill + overflow).",
+    "Einstein for Service (E10) is optional/Phase 2 \u2014 excluded from critical path. Included in P1 scope if licensing is confirmed.",
+    "Power BI LMD Dashboard data pipe (E11) is a scheduled export / simple connector \u2014 CRM Analytics recipe build would escalate E11 to L.",
+    "Salesforce Shield is already licensed on the Walmart org \u2014 if not, activation lead time adds to E08.",
+    "Pilot (Phase 1) is 2 CT Subway stores only \u2014 staffing for 1,300-store scale is a separate WFM exercise outside this estimate.",
+    "Client-side UAT team (Walmart QA + pilot store associates) is available in Phase 3.",
+    "Compliance/Legal resource is identified and available in Phase 1 to supply disclosure script, retention period, allergen queue ownership."
+  ],
+  "open_questions_blocking_estimate": [
+    {
+      "q": "Open Q6",
+      "question": "Case dedup key (FID + phone + 30-day) valid?",
+      "impact": "If invalid: E03 Flow redesign. Minor scope risk but could add 1-2 days."
+    },
+    {
+      "q": "Open Q7",
+      "question": "Allergen on-call queue owner?",
+      "impact": "Blocks E06 completion. Go-live blocker if unresolved."
+    },
+    {
+      "q": "Open Q8",
+      "question": "Item Signal triage owner?",
+      "impact": "Blocks E07 queue config. P1 \u2014 can defer."
+    },
+    {
+      "q": "Open Q12",
+      "question": "SCV + Omni-Channel + Einstein licensing procured?",
+      "impact": "Blocks everything. Must be resolved in Phase 0."
+    }
+  ],
+  "currency": "USD",
+  "validated_by": "user",
+  "disclaimer_class": "input-derived"
+}
